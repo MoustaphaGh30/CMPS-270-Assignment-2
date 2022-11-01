@@ -1,4 +1,42 @@
 #include <iostream>
+/*
+ TreeNode <T> *NewNode(T data)
+ Requires: a data of any type.
+ effects: a newly created node with null right and left.
+    If we pass Null: NewNode (NULL) nothing is created.
+    If we pass a +ve integer: NewNode (5): Returns pointer to a node with data 5.
+    If we pass a -ve integer: NewNode (-7): Returns pointer to a node with data -7.
+    If we pass a lowercase char:NewNode ('a'): Returns pointer to a node of value 'a'.
+    If we pass an uppercase char: NewNode ('Z') Returns: pointer to a node with data 'Z'.
+    if we pass character as an int:NewNode ('9') Returns: pointer to a node with data '9'.
+
+ ______________________________________________________________________________________________
+    void traversePreOrder()
+    Requires: nothing
+    Effects: prints the elements in Pre-order.
+    void traversePostOrder()
+    Requires: nothing
+    Effects: prints the elements in Post-order.
+    void traverseInOrder()
+    Requires: nothing
+    Effects: prints the elements in In-order.
+
+_________________________________________________________________________________________________
+
+    void AddNode(treeNode<T> *node)
+    Requires: a TreeNode of type the tree.
+    Effects: adds the node to an already existing Btree.
+_________________________________________________________________________________________________
+    void DeleteNode(T data)
+    Requires: a data of type the same as tree.
+    effects: searches for the node and deletes it if it has no children,
+    otherwise it returns an error.
+__________________________________________________________________________________________________
+    void treeSize() and subTreesize(TreeNode <T> *root)
+    Require: nothing
+    treesize returns the size of the whole tree, 0 if the tree is empty.
+    subtreeSize returns the size of the tree rooted at the specified node
+ */
 using namespace std;
 template <typename T>
     struct treeNode{
@@ -10,8 +48,14 @@ template <typename T>
 
 template <typename T>
 treeNode <T> * New_Node(T data){
+    if (data==NULL) {
+        cout<<"Null data";
+        return nullptr;
+    }
+    T *dataptr=new T;
+    *dataptr=data;
     auto * Node_pointer= new treeNode<T>();
-    Node_pointer->data=&data;
+    Node_pointer->data=dataptr;
     Node_pointer->left=nullptr;
     Node_pointer->right=nullptr;
     return Node_pointer;
@@ -23,84 +67,160 @@ class Btree{
      Btree() {
          overallRoot= nullptr;
      }
+    private:
     int isEmpty(){
         return (overallRoot==nullptr);
     }
-    void addNode(treeNode<T> *node){
-        if (node->data==nullptr) {
-            cout<<"Null data\n";
-            return;
+    treeNode<T>* insert(treeNode<T>* root, treeNode<T>*node)
+    {
+        if(root==nullptr)
+        {
+            root = node;
+            return root;
         }
-        insert(overallRoot,node->data);
-     }
-    void insert(treeNode<T> *root,T *data){
-        treeNode<T> *New_Node=new treeNode<T>();
-        New_Node->data=data;
-        int a=*(New_Node->data);
-        New_Node->left=nullptr;
-        New_Node->right=nullptr;
-        if (isEmpty()) {
-            overallRoot = New_Node;
+        else if (*(root->data)>=*(node->data))
+        {
+            root->left = insert(root->left,node);
         }
-        else if(root->left== nullptr&&root->right== nullptr){
-            root->left=New_Node;
+        else
+        {
+            root->right = insert(root->right,node);
         }
-        else if (root->left==nullptr&&root->right!=nullptr){
-            root->left= New_Node;
-        }
-        else if (root->left!=nullptr&&root->right==nullptr){
-            root->right= New_Node;
-        }
-        else {
-            insert(root->left,data);
-            insert(root->right,data);
-        }
+        return root;
     }
-    void traversePreOrder(){
-        PreOrder(overallRoot);
+    treeNode<T>* search_Helper(treeNode<T> * root, T data)
+    {
+        if(root == nullptr)
+            return nullptr;
+        else if(*(root ->data) == data)
+            return root;
+        else if(data > *(root -> data))
+            return search_Helper(root ->right,data);
+        else if(data < *(root ->data))
+            return search_Helper(root->left,data);
+    }
+    int treeSize_Helper(treeNode<T>* root)
+    {
+        if(root == nullptr)
+            return 0;
+        else
+            return 1 + treeSize_Helper(root -> left) + treeSize_Helper(root -> right);
     }
     void PreOrder(treeNode<T> *Node){
         if (Node==nullptr)
         return;
         else {
-            int a=*(Node->data);
-        cout<<"   "<<a;
+            cout<<*(Node->data)<<"  ";
         PreOrder(Node->left);
         PreOrder(Node->right);
         }
 
     }
+    void PostOrder(treeNode<T> *Node){
+        if (Node== nullptr)
+            return;
+        else {
+            PreOrder(Node->left);
+            PreOrder(Node->right);
+            cout<<*(Node->data)<<"  ";
+        }
+    }
+    void inOrder(treeNode<T> *Node){
+        if (Node== nullptr)
+            return;
+        else {
+            PreOrder(Node->left);
+            cout<<*(Node->data)<<"  ";
+            PreOrder(Node->right);
+        }
+    }
+    public:
+    void traversePostOrder(){
+         PostOrder(overallRoot);
+     }
+    void traversePreOrder(){
+        PreOrder(overallRoot);
+    }
 
+     void traverseInOrder(){
+         inOrder(overallRoot);
+     }
+    treeNode<T>* search(T data)
+    {
+        return search_Helper(overallRoot,data);
+    }
+    int treeSize()
+    {
+        return treeSize_Helper(overallRoot);
+    }
+    void addNode(treeNode<T>* node)
+    {
+        if(node == nullptr)
+            cout << "Null passed!";
+        else
+            overallRoot =insert(overallRoot,node);
+    }
+    void deleteNode(T data)
+    {
+        treeNode<T>* node = search(data);
+        if((node ==nullptr) || (node->left != nullptr) || (node->right != nullptr))
+            cout<<" error, we have children!"<< endl;
+        else
+            delete(node);
+    }
+    int subtreeSize(T data)
+    {
+        treeNode<T>* node = search(data);
+        char size =  treeSize_Helper(node);
+        return size;
+    }
 };
 int main(){
-    int x=4;
-    int *y=&x;
-    struct treeNode<int> *root=(new treeNode<int>());
-    int a=4;
-    int b=3;
-    int c=5;
-    int d=1;
-    root->data=&a;
-     //tree->traversePreOrder();
-     treeNode<int> *node1=new treeNode<int>();
-     node1->data=&b;
-     treeNode<int> *node2=new treeNode<int>();
-     node2->data=&c;
-     treeNode<int> *node3=new treeNode<int>();
-     node3->data=&d;
-//    cout<<" "<<*(root->data)<<endl;
-    Btree<int> *tree=new Btree<int>();
-//     treeNode<int> *node4=new treeNode<int>();
-//     treeNode<int> *node5=new treeNode<int>();
+    //Btree<int> *tree=new Btree<int>();
+    //The tree contains integers.
+//     treeNode<int> *root= New_Node(4);
+//     treeNode<int> *node1= New_Node(3);
+//     treeNode<int> *node2= New_Node(5);
+//     treeNode<int> *node3= New_Node(1);
+//     treeNode<int> *node4=New_Node(8);
+//     treeNode<int> *node5=New_Node(2);
+//     tree->addNode(root);
+//      tree->addNode(node1);
+//      tree->addNode(node2);
+//      tree->addNode(node3);
+//      tree->addNode(node4);
+//      tree->addNode(node5);
+    Btree<char> *tree=new Btree<char>();
+    //The tree contains chars.
+     treeNode<char> *root= New_Node('b');
+     treeNode<char> *node1= New_Node('A');
+     treeNode<char> *node2= New_Node('1');
+     treeNode<char> *node3= New_Node('?');
+     treeNode<char> *node4=New_Node('<');
+     treeNode<char> *node5=New_Node('*');
+     tree->addNode(root);
       tree->addNode(node1);
       tree->addNode(node2);
       tree->addNode(node3);
-//      tree->addNode(*(node3->data));
-//      tree->addNode(*(node4->data));
-     tree->traversePreOrder();
+      tree->addNode(node4);
+      tree->addNode(node5);
+    cout<<"PreOrder Traversal: ";
+    tree->traversePreOrder();
+    cout<<"\n";
+    cout<<"PostOrder Traversal: ";
+    tree->traversePostOrder();
+    cout<<"\n";
+    cout<<"InOrder Traversal: ";
+    tree->traverseInOrder();
+    cout<<"\n";
+    cout<<"Size= "<<tree->treeSize();
+    tree->deleteNode('?');
+    cout<<"Size after deleting a node= "<<tree->treeSize();
      delete(node1);
      delete(node2);
      delete(node3);
+    delete(node4);
+    delete(node5);
      delete(root);
     return 0;
 }

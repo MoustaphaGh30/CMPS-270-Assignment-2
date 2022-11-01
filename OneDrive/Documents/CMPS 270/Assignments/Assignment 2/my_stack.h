@@ -11,7 +11,6 @@ template <typename T>
 class my_stack {
 private:
     std:: vector <T> List;
-//    my_stack() {}
 public:
     int size ()
     {

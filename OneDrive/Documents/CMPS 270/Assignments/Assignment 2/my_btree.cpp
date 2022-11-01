@@ -5,17 +5,12 @@ template <typename T>
         T *data;
         struct treeNode<T> * left;
         struct treeNode<T> * right;
-        treeNode(T *dataa, treeNode<T> leftt, treeNode<T> rightt) {
-            data=dataa;
-            left=leftt;
-            right=rightt;
-        }
 
     };
 
 template <typename T>
 treeNode <T> * New_Node(T data){
-    auto * Node_pointer=new treeNode<T>();
+    auto * Node_pointer= new treeNode<T>();
     Node_pointer->data=&data;
     Node_pointer->left=nullptr;
     Node_pointer->right=nullptr;
@@ -25,38 +20,41 @@ template <typename T>
 class Btree{
     public:
     treeNode<T> *overallRoot;
-    explicit Btree(treeNode<T> *root){
-        this->overallRoot=root;
-    }
+     Btree() {
+         overallRoot= nullptr;
+     }
     int isEmpty(){
-        return (overallRoot==NULL);
+        return (overallRoot==nullptr);
     }
-    void addNode(T data){
-        this->overallRoot=insert(this->overallRoot,data);
-    }   
-    treeNode<T> *insert(treeNode<T> *root,T data){
-        if (isEmpty()) {
-            overallRoot = root;
-            return overallRoot;
+    void addNode(treeNode<T> *node){
+        if (node->data==nullptr) {
+            cout<<"Null data\n";
+            return;
         }
-        if (root==nullptr)
-        {
-            root=New_Node(data);
-            return root;
+        insert(overallRoot,node->data);
+     }
+    void insert(treeNode<T> *root,T *data){
+        treeNode<T> *New_Node=new treeNode<T>();
+        New_Node->data=data;
+        int a=*(New_Node->data);
+        New_Node->left=nullptr;
+        New_Node->right=nullptr;
+        if (isEmpty()) {
+            overallRoot = New_Node;
+        }
+        else if(root->left== nullptr&&root->right== nullptr){
+            root->left=New_Node;
         }
         else if (root->left==nullptr&&root->right!=nullptr){
-            //treeNode<T> *added_Node=New_Node(data);
-            root->left= insert(root->left,data);
+            root->left= New_Node;
         }
         else if (root->left!=nullptr&&root->right==nullptr){
-            //treeNode<T> *added_Node=New_Node(data);
-            root->right= insert(root->right,data);
+            root->right= New_Node;
         }
-       // else {
-          //  insert(root->left,data);
-         //   insert(root->right,data);
-        //}
-        return root;
+        else {
+            insert(root->left,data);
+            insert(root->right,data);
+        }
     }
     void traversePreOrder(){
         PreOrder(overallRoot);
@@ -65,7 +63,8 @@ class Btree{
         if (Node==nullptr)
         return;
         else {
-        printf("%d",*(Node->data));
+            int a=*(Node->data);
+        cout<<"   "<<a;
         PreOrder(Node->left);
         PreOrder(Node->right);
         }
@@ -76,29 +75,32 @@ class Btree{
 int main(){
     int x=4;
     int *y=&x;
-    struct treeNode<int> root=new treeNode(y,NULL,NULL);
-    cout<<" "<<*(root->data)<<endl;
-     auto *tree=new Btree<int>(root);
-     tree->addNode(*(root->data));
-     int *a=tree->overallRoot->data;
-     cout<<*a;
+    struct treeNode<int> *root=(new treeNode<int>());
+    int a=4;
+    int b=3;
+    int c=5;
+    int d=1;
+    root->data=&a;
      //tree->traversePreOrder();
-//     treeNode<int> *node1=New_Node(1);
-//     treeNode<int> *node2=New_Node(2);
-//     treeNode<int> *node3=New_Node(3);
-//     treeNode<int> *node4=New_Node(4);
-//     treeNode<int> *node5=New_Node(5);
-//     //cout<<" "<<*(node1->data);
-//      tree->addNode(*(node1->data));
-//      tree->addNode(*(node2->data));
+     treeNode<int> *node1=new treeNode<int>();
+     node1->data=&b;
+     treeNode<int> *node2=new treeNode<int>();
+     node2->data=&c;
+     treeNode<int> *node3=new treeNode<int>();
+     node3->data=&d;
+//    cout<<" "<<*(root->data)<<endl;
+    Btree<int> *tree=new Btree<int>();
+//     treeNode<int> *node4=new treeNode<int>();
+//     treeNode<int> *node5=new treeNode<int>();
+      tree->addNode(node1);
+      tree->addNode(node2);
+      tree->addNode(node3);
 //      tree->addNode(*(node3->data));
 //      tree->addNode(*(node4->data));
-//     tree->traversePreOrder(tree->overallRoot);
-//     delete(node1);
-//     delete(node2);
-//     delete(node3);
-//     delete(node4);
-//     delete(node5);
+     tree->traversePreOrder();
+     delete(node1);
+     delete(node2);
+     delete(node3);
      delete(root);
     return 0;
 }

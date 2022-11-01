@@ -3,12 +3,12 @@
  TreeNode <T> *NewNode(T data)
  Requires: a data of any type.
  effects: a newly created node with null right and left.
-    If we pass Null: NewNode (NULL) nothing is created.
-    If we pass a +ve integer: NewNode (5): Returns pointer to a node with data 5.
-    If we pass a -ve integer: NewNode (-7): Returns pointer to a node with data -7.
-    If we pass a lowercase char:NewNode ('a'): Returns pointer to a node of value 'a'.
-    If we pass an uppercase char: NewNode ('Z') Returns: pointer to a node with data 'Z'.
-    if we pass character as an int:NewNode ('9') Returns: pointer to a node with data '9'.
+    If we pass Null: NewNode (nullptr) nothing is created.
+    If we pass a +ve integer: NewNode(1) Returns pointer to a node with data 1.
+    If we pass a -ve integer: NewNode(-99) Returns pointer to a node with data -99.
+    if we pass character as an int:NewNode('5') Returns pointer to a node with data '5'.
+    If we pass a lowercase char:NewNode('f') Returns pointer to a node of value 'f'.
+    If we pass an uppercase char: NewNode('L') Returns: pointer to a node with data 'L'.
 
  ______________________________________________________________________________________________
     void traversePreOrder()

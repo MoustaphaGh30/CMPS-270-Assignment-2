@@ -74,6 +74,44 @@ public:
             cout<<"Vertex not found";
         }
     }
+    const vector<int> hasCycle(){
+        return checkCycle(Graph);
+    }
+private:
+    const vector<int> checkCycle(map<int,vector<int>> Graph){
+         vector<int> current_Destinations;
+         vector<int> current_Destinations2;
+         vector<int> resultingCycle;
+         int NumCommonDestinations=0;
+        for(auto itr=Graph.begin();itr!=Graph.end();itr++){
+            current_Destinations=itr->second;
+            resultingCycle.push_back(itr->first);
+            int a=itr->first;
+            itr++;
+            if(itr==Graph.end())
+            break;
+            current_Destinations2=itr->second;
+            resultingCycle.push_back(itr->first);
+            int b=itr->first;
+                for(int i=0;i<current_Destinations.size();i++){
+                    for(int j=0;j<current_Destinations2.size();j++){
+                        if (current_Destinations[i]==current_Destinations2[j]){
+                            NumCommonDestinations++;
+                            resultingCycle.push_back(current_Destinations2[j]);
+                        }
+                    }
+                }
+            if(resultingCycle.size()>=4)
+                return resultingCycle;
+            NumCommonDestinations=0;
+            current_Destinations.clear();
+            current_Destinations2.clear();
+            resultingCycle.clear();
+        }
+        vector <int> failed;
+        failed.push_back(-99999);
+        return failed;
+    }
 
 };
 

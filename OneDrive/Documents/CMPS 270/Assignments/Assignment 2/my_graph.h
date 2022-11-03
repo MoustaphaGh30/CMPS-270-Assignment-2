@@ -32,7 +32,7 @@ passing a nodeID that exists: Returns the intended output.
 #include <map>
 using namespace std;
 class my_graph {
-private:
+protected:
     map<int, vector<int>> Graph;
 public:    
     my_graph(const vector<int> &starts,const vector<int> &ends){

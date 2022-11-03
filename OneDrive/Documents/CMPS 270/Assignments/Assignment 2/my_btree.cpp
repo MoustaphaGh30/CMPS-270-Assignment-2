@@ -1,4 +1,5 @@
 #include <iostream>
+#include <queue>
 /*
  TreeNode <T> *NewNode(T data)
  Requires: a data of any type.
@@ -48,10 +49,10 @@ template <typename T>
 
 template <typename T>
 treeNode <T> * New_Node(T data){
-    if (data==NULL) {
-        cout<<"Null data";
-        return nullptr;
-    }
+    // if (data==) {
+    //     cout<<"Null data";
+    //     return nullptr;
+    // }
     T *dataptr=new T;
     *dataptr=data;
     auto * Node_pointer= new treeNode<T>();
@@ -78,26 +79,60 @@ class Btree{
             root = node;
             return root;
         }
-        else if (*(root->data)>=*(node->data))
-        {
-            root->left = insert(root->left,node);
+        queue<treeNode<T>*> q;
+    q.push(root);
+ 
+    while (!q.empty()) {
+        treeNode<T>* temp = q.front();
+        q.pop();
+ 
+        if (temp->left != NULL)
+            q.push(temp->left);
+        else {
+            temp->left = node;
+            return root;
         }
-        else
-        {
-            root->right = insert(root->right,node);
+ 
+        if (temp->right != NULL)
+            q.push(temp->right);
+        else {
+            temp->right = node;
+            return root;
         }
+    }
+        // else if (*(root->data)>=*(node->data))
+        // {
+        //     root->left = insert(root->left,node);
+        // }
+        // else
+        // {
+        //     root->right = insert(root->right,node);
+        // }
         return root;
     }
-    treeNode<T>* search_Helper(treeNode<T> * root, T data)
-    {
-        if(root == nullptr)
-            return nullptr;
-        else if(*(root ->data) == data)
+    treeNode<T> *search_Helper(treeNode<T> * root, T data)
+    {   
+        if(root!=nullptr){
+            if (*(root->data)==data)
             return root;
-        else if(data > *(root -> data))
-            return search_Helper(root ->right,data);
-        else if(data < *(root ->data))
-            return search_Helper(root->left,data);
+            else {
+                treeNode<T> *foundNode=search_Helper(root->left,data);
+                if (foundNode==nullptr)
+                foundNode=search_Helper(root->right,data);
+            }
+        }
+        else 
+        return nullptr;
+
+    }
+    treeNode<T> *delete_helper(treeNode<T> *root, T data){
+        if (root==nullptr)
+        return nullptr;
+        root->left=delete_helper(root->left,data);
+        root->right=delete_helper(root->right,data);
+        if(root->left==nullptr&&root->right==nullptr&&*(root->data)==data)
+        return nullptr;
+        return root;
     }
     int treeSize_Helper(treeNode<T>* root)
     {
@@ -156,17 +191,13 @@ class Btree{
     void addNode(treeNode<T>* node)
     {
         if(node == nullptr)
-            cout << "Null passed!";
+            cout << "Null passed!"<<endl;
         else
             overallRoot =insert(overallRoot,node);
     }
-    void deleteNode(T data)
+    treeNode<T> *deleteNode(T data)
     {
-        treeNode<T>* node = search(data);
-        if((node ==nullptr) || (node->left != nullptr) || (node->right != nullptr))
-            cout<<" error, we have children!"<< endl;
-        else
-            delete(node);
+       return delete_helper(overallRoot,data);
     }
     int subtreeSize(T data)
     {
@@ -176,28 +207,28 @@ class Btree{
     }
 };
 int main(){
-    //Btree<int> *tree=new Btree<int>();
+    Btree<int> *tree=new Btree<int>();
     //The tree contains integers.
-//     treeNode<int> *root= New_Node(4);
-//     treeNode<int> *node1= New_Node(3);
-//     treeNode<int> *node2= New_Node(5);
-//     treeNode<int> *node3= New_Node(1);
-//     treeNode<int> *node4=New_Node(8);
-//     treeNode<int> *node5=New_Node(2);
+    treeNode<int> *root= New_Node(0);
+    treeNode<int> *node1= New_Node(3);
+    treeNode<int> *node2= New_Node(5);
+    treeNode<int> *node3= New_Node(1);
+    treeNode<int> *node4=New_Node(8);
+    treeNode<int> *node5=New_Node(2);
 //     tree->addNode(root);
 //      tree->addNode(node1);
 //      tree->addNode(node2);
 //      tree->addNode(node3);
 //      tree->addNode(node4);
 //      tree->addNode(node5);
-    Btree<char> *tree=new Btree<char>();
-    //The tree contains chars.
-     treeNode<char> *root= New_Node('b');
-     treeNode<char> *node1= New_Node('A');
-     treeNode<char> *node2= New_Node('1');
-     treeNode<char> *node3= New_Node('?');
-     treeNode<char> *node4=New_Node('<');
-     treeNode<char> *node5=New_Node('*');
+    // Btree<char> *tree=new Btree<char>();
+    // //The tree contains chars.
+    //  treeNode<char> *root= New_Node('b');
+    //  treeNode<char> *node1= New_Node('A');
+    //  treeNode<char> *node2= New_Node('1');
+    //  treeNode<char> *node3= New_Node('?');
+    //  treeNode<char> *node4=New_Node('<');
+    //  treeNode<char> *node5=New_Node('*');
      tree->addNode(root);
       tree->addNode(node1);
       tree->addNode(node2);
@@ -213,9 +244,12 @@ int main(){
     cout<<"InOrder Traversal: ";
     tree->traverseInOrder();
     cout<<"\n";
-    cout<<"Size= "<<tree->treeSize();
-    tree->deleteNode('?');
-    cout<<"Size after deleting a node= "<<tree->treeSize();
+    treeNode<int> *findnode=tree->search(5);
+    cout<<"  "<<*(findnode->data)<<endl;
+     tree->deleteNode(2);
+     cout<<"Size after deleting a node= "<<tree->treeSize()<<"\n";
+    // cout<<"PostOrder Traversal: ";
+    // tree->traversePostOrder();
      delete(node1);
      delete(node2);
      delete(node3);
